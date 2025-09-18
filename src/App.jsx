@@ -2,8 +2,8 @@
 TODO remove bootstrap and replace with MUI.
 */
 
-import { useState, useRef } from "react";
-import { Container, Row, Col, Button, Form } from "react-bootstrap";
+import { useRef, useState } from "react";
+import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import QuotationTable from "./QuotationTable";
 
 const products = [
@@ -17,9 +17,11 @@ function App() {
   const itemRef = useRef();
   const ppuRef = useRef();
   const qtyRef = useRef();
+  const disRef = useRef();
 
   const [dataItems, setDataItems] = useState([]);
   const [ppu, setPpu] = useState(products[0].price)
+  const [disc, setDisc] = useState(0)
 
   const addItem = () => {
     let item = products.find((v) => itemRef.current.value === v.code)
@@ -28,6 +30,7 @@ function App() {
       item: item.name,
       ppu: ppuRef.current.value,
       qty: qtyRef.current.value,
+      disc: disRef.current.value,
     };
 
     setDataItems([...dataItems, newItem]);
@@ -37,6 +40,10 @@ function App() {
     let newDataItems = [...dataItems];
     newDataItems.splice(index, 1);
     setDataItems(newDataItems);
+  }
+
+  const clearAll = () => {
+    setDataItems([]);
   }
 
   const productChange = () => {
@@ -74,6 +81,12 @@ function App() {
               <Form.Control type="number" ref={qtyRef} defaultValue={1} />
             </Col>
           </Row>
+          <Row>
+            <Col>
+              <Form.Label>Discount</Form.Label>
+              <Form.Control type="number" ref={disRef} value={disc} onChange={e => setDisc(disRef.current.value)} />
+            </Col>
+          </Row>
           <hr />
           <div className="d-grid gap-2">
             <Button variant="primary" onClick={addItem}>
@@ -84,7 +97,8 @@ function App() {
         <Col md={8}>
           <QuotationTable
             data={dataItems}
-            deleteByIndex={deleteByIndex} />
+            deleteByIndex={deleteByIndex}
+            clearAll={clearAll}/>
         </Col>
       </Row>
     </Container>
